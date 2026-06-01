@@ -1,6 +1,5 @@
 [build]
-builder = "heroku/bun"
-watchPattern = "src/**"
+builder = "dockerfile"
 
 [deploy]
 startCommand = "chmod +x railway-start.sh && bash railway-start.sh"
