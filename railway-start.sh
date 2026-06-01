@@ -5,7 +5,9 @@ set -e
 echo "============================================"
 echo "  NITO'S PIZZA - Iniciando en Railway"
 echo "============================================"
-echo "PORT: ${PORT:-3000}"
+# Forzamos a que si Railway da un puerto (ej. 8080) se use ese, si no, usa 3000 por defecto
+CURRENT_PORT="${PORT:-3000}"
+echo "PORT: $CURRENT_PORT"
 echo "HOST: 0.0.0.0"
 echo "NODE_ENV: ${NODE_ENV:-production}"
 echo "DATABASE_URL set: $([ -n "$DATABASE_URL" ] && echo 'YES' || echo 'NO')"
@@ -58,7 +60,15 @@ if [ -d ".next/standalone" ]; then
 fi
 
 echo "============================================"
-echo "Iniciando servidor..."
+echo "Iniciando servidor optimizado..."
 echo "============================================"
 
-exec node server.js
+# SOLUCIÓN: Si Next.js generó el standalone, entramos a la carpeta para ejecutar el server real
+if [ -f ".next/standalone/server.js" ]; then
+  echo "Ejecutando servidor desde la carpeta standalone..."
+  cd .next/standalone
+  PORT=$CURRENT_PORT HOST=0.0.0.0 exec node server.js
+else
+  echo "Servidor standalone no encontrado, intentando arranque directo..."
+  PORT=$CURRENT_PORT HOST=0.0.0.0 exec node server.js
+fi

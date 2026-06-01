@@ -32,23 +32,22 @@ FROM oven/bun:1 AS runner
 
 WORKDIR /app
 
-RUN groupadd --system --gid 1001 nodejs || true
-RUN useradd --system --uid 1001 -g nodejs nextjs || true
+# Mantenemos las variables de producción globales
+ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
 
+# Copiamos todo el contenido compilado
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/railway-start.sh ./railway-start.sh
 
-RUN chmod 755 railway-start.sh
-RUN chown -R nextjs:nodejs /app
+# Aseguramos los permisos del script de inicio
+RUN chmod +x railway-start.sh
 
-ENV NODE_ENV=production
-ENV HOSTNAME=0.0.0.0
+# CORRECCIÓN DE PUERTO: Railway usa el puerto dinámico asignado a la variable PORT (usualmente 8080)
+EXPOSE 8080
 
-USER nextjs
-
-EXPOSE 3000
-
-CMD ["sh", "./railway-start.sh"]
+# Ejecutamos el inicio directamente para evitar bloqueos de permisos en Prisma
+CMD ["bash", "railway-start.sh"]
