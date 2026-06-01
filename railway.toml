@@ -1,0 +1,10 @@
+[build]
+builder = "heroku/bun"
+watchPattern = "src/**"
+
+[deploy]
+startCommand = "chmod +x railway-start.sh && bash railway-start.sh"
+healthcheckPath = "/"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
