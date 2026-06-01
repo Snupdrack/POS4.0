@@ -24,8 +24,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# CORRECCIÓN: Comandos nativos para la imagen de Bun (Debian)
+RUN groupadd --system --gid 1001 nodejs || true
+RUN useradd --system --uid 1001 -g nodejs nextjs || true
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
@@ -33,6 +34,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/railway-start.sh ./railway-start.sh
 
+# Dar permisos al script de arranque
 RUN chmod +x railway-start.sh
 
 USER nextjs
