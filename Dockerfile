@@ -4,6 +4,8 @@ WORKDIR /app
 # Install dependencies
 FROM base AS deps
 COPY package.json bun.lock ./
+# AGREGA ESTA LÍNEA PARA QUE PRISMA ENCUENTRE EL ESQUEMA:
+COPY prisma ./prisma/
 RUN bun install --frozen-lockfile
 
 # Build
@@ -24,7 +26,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 
-# CORRECCIÓN: Comandos nativos para la imagen de Bun (Debian)
+# Corrección previa para la imagen de Bun (Debian)
 RUN groupadd --system --gid 1001 nodejs || true
 RUN useradd --system --uid 1001 -g nodejs nextjs || true
 
