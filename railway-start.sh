@@ -20,7 +20,8 @@ bunx prisma@6 db push --skip-generate
 echo "[3/4] Verificando datos iniciales..."
 SEED_NEEDED=0
 
-node -e "
+# CORRECCIÓN: Ejecutamos la verificación con Bun en lugar de Node
+bun -e "
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -42,7 +43,8 @@ prisma.product.count()
 
 if [ "$SEED_NEEDED" = "2" ]; then
   echo "Ejecutando seed..."
-  npx tsx prisma/seed.ts
+  # CORRECCIÓN: Usamos bun para ejecutar el script de TS sin requerir npx tsx
+  bun prisma/seed.ts
 fi
 
 echo "[4/4] Verificando estáticos..."
@@ -57,12 +59,11 @@ echo "============================================"
 echo "Iniciando servidor optimizado..."
 echo "============================================"
 
-# Buscamos el servidor en la ruta real de standalone para evitar fallos de Healthcheck
 if [ -f ".next/standalone/server.js" ]; then
   echo "Ejecutando desde la carpeta standalone..."
   cd .next/standalone
-  PORT=$CURRENT_PORT HOSTNAME=0.0.0.0 exec node server.js
+  PORT=$CURRENT_PORT HOSTNAME=0.0.0.0 exec bun server.js
 else
   echo "Ejecutando desde la raíz..."
-  PORT=$CURRENT_PORT HOSTNAME=0.0.0.0 exec node server.js
+  PORT=$CURRENT_PORT HOSTNAME=0.0.0.0 exec bun server.js
 fi
