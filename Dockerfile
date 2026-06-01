@@ -19,7 +19,7 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN bunx prisma generate
+RUN bunx prisma@6 generate
 RUN bun run build
 
 RUN cp -r .next/static .next/standalone/.next/static || true

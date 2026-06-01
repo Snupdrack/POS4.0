@@ -14,10 +14,10 @@ echo "DATABASE_URL set: $([ -n "$DATABASE_URL" ] && echo 'YES' || echo 'NO')"
 echo "============================================"
 
 echo "[1/4] Generando cliente Prisma..."
-npx prisma generate
+bunx prisma@6 generate
 
 echo "[2/4] Sincronizando base de datos..."
-npx prisma db push --skip-generate
+bunx prisma@6 db push --skip-generate
 
 echo "[3/4] Verificando datos iniciales..."
 
