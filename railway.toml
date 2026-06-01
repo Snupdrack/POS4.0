@@ -2,7 +2,8 @@
 builder = "dockerfile"
 
 [deploy]
-startCommand = "chmod +x railway-start.sh && bash railway-start.sh"
+startCommand = "sh railway-start.sh"
+preDeployCommand = "bunx prisma generate && bunx prisma db push --skip-generate"
 healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
